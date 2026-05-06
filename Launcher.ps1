@@ -1,7 +1,7 @@
-# DeepSysTools Launcher
+# DeepSysTools Launcher - Kategoria alapú
 $ErrorActionPreference = "Stop"
 
-# Jogosultsag emelese
+# Jogosultság emelése
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
     exit
@@ -10,87 +10,118 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 $RootDir = $PSScriptRoot
 $LogDir  = Join-Path $RootDir "LOG"
 $ScriptDir = Join-Path $RootDir "Scripts"
-$SysDir = Join-Path $RootDir "Sys"
 $JsonPath = Join-Path $RootDir "SysList.json"
 
 if (-not (Test-Path $LogDir)) { New-Item -ItemType Directory -Path $LogDir | Out-Null }
-if (-not (Test-Path $SysDir)) { New-Item -ItemType Directory -Path $SysDir | Out-Null }
-
 $LogFile = Join-Path $LogDir "Session_$(Get-Date -Format 'yyyyMMdd').log"
 
-function Write-DeepLog($Message) {
+function Write-DeepLog($Msg) {
     $Stamp = Get-Date -Format "HH:mm:ss"
-    "[$Stamp] $Message" | Out-File -FilePath $LogFile -Append -Encoding UTF8
+    "[$Stamp] $Msg" | Out-File -FilePath $LogFile -Append -Encoding UTF8
 }
 
-# Rendszer adatok lekerese
+# Rendszer info
 $OSCaption = (Get-WmiObject Win32_OperatingSystem).Caption
 $Arch = if ([Environment]::Is64BitOperatingSystem) { "x64" } else { "x86" }
-$OSID = ""
+$OSID = if ($OSCaption -like "*Windows 11*") { "W11" } elseif ($OSCaption -like "*10*") { "W10" } else { "Legacy" }
 
-if ($OSCaption -like "*Windows 11*") { $OSID = "W11" }
-elseif ($OSCaption -like "*Windows 10*") { $OSID = "W10" }
-elseif ($OSCaption -like "*Windows 8.1*") { $OSID = "W81" }
-elseif ($OSCaption -like "*Windows 8*") { $OSID = "W8" }
-elseif ($OSCaption -like "*Windows 7*") { $OSID = "W7" }
-elseif ($OSCaption -like "*Windows XP*") { $OSID = "XP" }
-else { $OSID = "Unknown" }
+Write-DeepLog "Inditas: $OSCaption ($OSID)"
 
-Write-DeepLog "Rendszer inditva: $OSCaption ($OSID) [$Arch]"
+# .NET alapú háttérfolyamat (Runspace) létrehozása
+$Runspace = [runspacefactory]::CreateRunspace()
+$Runspace.Open()
 
-if (-not (Test-Path $JsonPath)) {
-    Write-Host "HIBA: A SysList.json fajl nem talalhato!" -ForegroundColor Red
-    exit
-}
+$PowerShell = [powershell]::Create()
+$PowerShell.Runspace = $Runspace
 
-try {
-    $RawJson = Get-Content $JsonPath -Raw -Encoding UTF8
-    $Data = $RawJson | ConvertFrom-Json
-} catch {
-    Write-Host "Hiba a JSON feldolgozasakor!" -ForegroundColor Red
-    Write-DeepLog "JSON HIBA: $_"
-    pause
-    exit
-}
+# Átadjuk a szükséges útvonalakat a háttérszálnak
+$PowerShell.AddScript({
+    param($SPath, $RDir)
+    & $SPath -RootDir $RDir
+}).AddParameter("SPath", (Join-Path $ScriptDir "Searching.ps1")).AddParameter("RDir", $RootDir) | Out-Null
 
-Clear-Host
-function Show-Menu {
-    # Clear-Host kikerult, hogy az uzenetek lathatoak maradjanak
-    Write-Host "`n--- DeepSysTools ---" -ForegroundColor Yellow
+# Indítás aszinkron módon
+$AsyncResult = $PowerShell.BeginInvoke()
+Write-DeepLog "Searching.ps1 elinditva a hatterben (.NET Runspace)"
+
+
+# JSON betöltés
+$Data = Get-Content $JsonPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$Categories = $Data.tools.category | Select-Object -Unique | Where-Object { $_ -ne $null }
+
+while ($true) {
+    Clear-Host
+    Write-Host "--- DeepSysTools - Kategoriak ---" -ForegroundColor Yellow
     Write-Host "Rendszer: $OSCaption [$Arch]" -ForegroundColor Cyan
     Write-Host "--------------------"
-    for ($i=0; $i -lt $Data.tools.Count; $i++) {
-        $T = $Data.tools[$i]
-        if (-not $T.display_name) { continue }
-        $Stat = $T.availability.$OSID.status
-        Write-Host ("[{0,2}] {1,-35} ({2})" -f ($i+1), $T.display_name, $Stat)
+    for ($i=0; $i -lt $Categories.Count; $i++) {
+        Write-Host ("[{0,2}] {1}" -f ($i+1), $Categories[$i])
     }
     Write-Host "--------------------"
     Write-Host "[Q] Kilepes"
-}
 
-$Idx = 0
-while ($true) {
-    Show-Menu
-    $Sel = Read-Host "Valassz egy szamot"
-    if ($Sel -eq "q") { break }
-    
-    if ([int]::TryParse($Sel, [ref]$Idx) -and $Idx -gt 0 -and $Idx -le $Data.tools.Count) {
-        $Tool = $Data.tools[$Idx-1]
-        $TID = $Tool.id
-        Write-DeepLog "Inditas valasztva: $TID"
+    $CatInput = Read-Host "Valassz kategoriat"
+    if ($CatInput -eq "q") { break }
 
-        $SpecScript = Join-Path $ScriptDir "$TID\$OSID.ps1"
-        $CommonScript = Join-Path $ScriptDir "$TID\Default.ps1"
+    $cIdx = 0
+    if ([int]::TryParse($CatInput, [ref]$cIdx) -and $cIdx -gt 0 -and $cIdx -le $Categories.Count) {
+        $SelCat = $Categories[$cIdx-1]
+        
+        while ($true) {
+            Clear-Host
+            Write-Host "--- Kategoria: $SelCat ---" -ForegroundColor Cyan
+            $Filtered = $Data.tools | Where-Object { $_.category -eq $SelCat }
+            $List = New-Object System.Collections.Generic.List[Object]
+            
+            $count = 1
+            foreach ($T in $Filtered) {
+                Write-Host ("[{0,2}] {1}" -f $count, $T.display_name)
+                $List.Add($T)
+                $count++
+            }
+            Write-Host "--------------------"
+            Write-Host "[B] Vissza"
 
-        if (Test-Path $SpecScript) {
-            & $SpecScript
-        }
-        elseif (Test-Path $CommonScript) {
-            & $CommonScript
-        }
-        else {
-            Start-Process $Tool.command -ErrorAction SilentlyContinue
+            $ToolInput = Read-Host "Valassz eszkozt"
+            if ($ToolInput -eq "b") { break }
+
+            $tIdx = 0
+                        if ([int]::TryParse($ToolInput, [ref]$tIdx) -and $tIdx -gt 0 -and $tIdx -le $List.Count) {
+                $Tool = $List[$tIdx-1]
+                $TID = $Tool.id
+                Write-DeepLog "Futtatas: $TID"
+
+                # Útvonalak keresése a JSON ID-ja alapján
+                $Spec = Join-Path $ScriptDir "$TID\$OSID.ps1"
+                $Def = Join-Path $ScriptDir "$TID\Default.ps1"
+
+                if (Test-Path $Spec) { 
+                    & $Spec 
+                }
+                elseif (Test-Path $Def) { 
+                    & $Def 
+                }
+                else {
+                    # Ha nincs külön script, direkt parancs inditása
+                    Write-DeepLog "Direkt parancs inditasa: $($Tool.command)"
+                    
+                    # Speciális shell hivatkozások kezelése explorerrel
+                    if ($Tool.command -like "shell:*" -or $Tool.command -like "*:::{*") {
+                        Start-Process explorer.exe -ArgumentList $Tool.command
+                    }
+                    else {
+                        # Normal inditás, hiba esetén (SID/Process hiba) fallback az Explorerre
+                        try {
+                            Start-Process $Tool.command -ErrorAction Stop
+                        } catch {
+                            Write-DeepLog "SID/Process hiba, ujraprobalas Explorerrel..."
+                            Start-Process explorer.exe -ArgumentList $Tool.command
+                        }
+                    }
+                }
+                Write-Host "`nNyomj Entert a folytatashoz..."
+                $null = Read-Host
+            }
         }
     }
 }
