@@ -53,8 +53,8 @@ try {
     exit
 }
 
+Clear-Host
 function Show-Menu {
-    Clear-Host
     Write-Host "--- DeepSysTools ---" -ForegroundColor Yellow
     Write-Host "Rendszer: $OSCaption [$Arch]" -ForegroundColor Cyan
     Write-Host "--------------------"
