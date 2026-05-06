@@ -1,7 +1,7 @@
 # DeepSysTools Launcher
 $ErrorActionPreference = "Stop"
 
-# Jogosultság emelése
+# Jogosultsag emelese
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
     exit
@@ -23,7 +23,7 @@ function Write-DeepLog($Message) {
     "[$Stamp] $Message" | Out-File -FilePath $LogFile -Append -Encoding UTF8
 }
 
-# Rendszer adatok lekérése
+# Rendszer adatok lekerese
 $OSCaption = (Get-WmiObject Win32_OperatingSystem).Caption
 $Arch = if ([Environment]::Is64BitOperatingSystem) { "x64" } else { "x86" }
 $OSID = ""
@@ -36,10 +36,10 @@ elseif ($OSCaption -like "*Windows 7*") { $OSID = "W7" }
 elseif ($OSCaption -like "*Windows XP*") { $OSID = "XP" }
 else { $OSID = "Unknown" }
 
-Write-DeepLog "Rendszer indítva: $OSCaption ($OSID) [$Arch]"
+Write-DeepLog "Rendszer inditva: $OSCaption ($OSID) [$Arch]"
 
 if (-not (Test-Path $JsonPath)) {
-    Write-DeepHost "HIBA: A SysList.json fájl nem található!" -ForegroundColor Red
+    Write-Host "HIBA: A SysList.json fajl nem talalhato!" -ForegroundColor Red
     exit
 }
 
@@ -47,7 +47,7 @@ try {
     $RawJson = Get-Content $JsonPath -Raw -Encoding UTF8
     $Data = $RawJson | ConvertFrom-Json
 } catch {
-    Write-Host "Hiba a JSON feldolgozásakor! Ellenőrizd a fájl szerkezetét!" -ForegroundColor Red
+    Write-Host "Hiba a JSON feldolgozasakor!" -ForegroundColor Red
     Write-DeepLog "JSON HIBA: $_"
     pause
     exit
@@ -55,46 +55,41 @@ try {
 
 Clear-Host
 function Show-Menu {
-    Write-Host "--- DeepSysTools ---" -ForegroundColor Yellow
+    # Clear-Host kikerult, hogy az uzenetek lathatoak maradjanak
+    Write-Host "`n--- DeepSysTools ---" -ForegroundColor Yellow
     Write-Host "Rendszer: $OSCaption [$Arch]" -ForegroundColor Cyan
     Write-Host "--------------------"
     for ($i=0; $i -lt $Data.tools.Count; $i++) {
         $T = $Data.tools[$i]
-        $Stat = $T.availability.$OSID.status
         if (-not $T.display_name) { continue }
+        $Stat = $T.availability.$OSID.status
         Write-Host ("[{0,2}] {1,-35} ({2})" -f ($i+1), $T.display_name, $Stat)
     }
     Write-Host "--------------------"
-    Write-Host "[Q] Kilépés"
+    Write-Host "[Q] Kilepes"
 }
 
-# Inicializáljuk a változót a [ref] számára
 $Idx = 0
-
 while ($true) {
     Show-Menu
-    $Sel = Read-Host "Válassz egy számot"
+    $Sel = Read-Host "Valassz egy szamot"
     if ($Sel -eq "q") { break }
     
     if ([int]::TryParse($Sel, [ref]$Idx) -and $Idx -gt 0 -and $Idx -le $Data.tools.Count) {
         $Tool = $Data.tools[$Idx-1]
         $TID = $Tool.id
-        Write-DeepLog "Indítás választva: $TID"
+        Write-DeepLog "Inditas valasztva: $TID"
 
-        # Scripts\[ID]\W10.ps1 formátum keresése
         $SpecScript = Join-Path $ScriptDir "$TID\$OSID.ps1"
         $CommonScript = Join-Path $ScriptDir "$TID\Default.ps1"
 
         if (Test-Path $SpecScript) {
-            Write-DeepLog "Script indítása: $SpecScript"
             & $SpecScript
         }
         elseif (Test-Path $CommonScript) {
-            Write-DeepLog "Script indítása: $CommonScript"
             & $CommonScript
         }
         else {
-            Write-DeepLog "Direkt parancs: $($Tool.command)"
             Start-Process $Tool.command -ErrorAction SilentlyContinue
         }
     }
