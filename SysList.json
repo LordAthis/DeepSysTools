@@ -47,7 +47,7 @@
       }
     },
     {
-      "id": "ncpa_cpl",
+      "id": "NcpaCPL",
       "display_name": "Halozati kapcsolatok (Adapterek)",
       "command": "ncpa.cpl",
       "availability": {
@@ -60,7 +60,7 @@
       }
     },
     {
-      "id": "gpedit_msc",
+      "id": "GpeditMSC",
       "display_name": "Csoporthazirend",
       "command": "gpedit.msc",
       "availability": {
@@ -73,7 +73,7 @@
       }
     },
     {
-      "id": "lusrmgr_msc",
+      "id": "LusrmgrMSC",
       "display_name": "Helyi felhasznalok",
       "command": "lusrmgr.msc",
       "availability": {
@@ -86,7 +86,7 @@
       }
     },
     {
-      "id": "netplwiz",
+      "id": "Netplwiz",
       "display_name": "Specialis felhasznaloi fiokok",
       "command": "netplwiz",
       "availability": {
@@ -99,7 +99,7 @@
       }
     },
     {
-      "id": "mmsys_cpl",
+      "id": "MmsysCPL",
       "display_name": "Klasszikus Hang",
       "command": "mmsys.cpl",
       "availability": {
@@ -112,7 +112,7 @@
       }
     },
     {
-      "id": "diskmgmt_msc",
+      "id": "DiskmgmtMSC",
       "display_name": "Lemezkezeles",
       "command": "diskmgmt.msc",
       "availability": {
@@ -125,7 +125,7 @@
       }
     },
     {
-      "id": "appwiz_cpl",
+      "id": "AppwizCPL",
       "display_name": "Programok telepitese",
       "command": "appwiz.cpl",
       "availability": {
@@ -138,7 +138,7 @@
       }
     },
     {
-      "id": "sysdm_cpl",
+      "id": "SysdmCPL",
       "display_name": "Rendszer tulajdonságai",
       "command": "sysdm.cpl",
       "availability": {
@@ -151,7 +151,7 @@
       }
     },
     {
-      "id": "msconfig",
+      "id": "Msconfig",
       "display_name": "Rendszerkonfiguracio",
       "command": "msconfig",
       "availability": {
@@ -164,7 +164,7 @@
       }
     },
     {
-      "id": "services_msc",
+      "id": "ServicesMSC",
       "display_name": "Szolgaltatasok",
       "command": "services.msc",
       "availability": {
@@ -177,7 +177,7 @@
       }
     },
     {
-      "id": "regedit",
+      "id": "Regedit",
       "display_name": "Registry Szerkeszto",
       "command": "regedit",
       "availability": {
@@ -190,7 +190,7 @@
       }
     },
     {
-      "id": "taskschd_msc",
+      "id": "TaskschdMSC",
       "display_name": "Feladatutemezo",
       "command": "taskschd.msc",
       "availability": {
@@ -203,7 +203,7 @@
       }
     },
     {
-      "id": "secpol_msc",
+      "id": "SecpolMSC",
       "display_name": "Helyi biztonsagi hazirend",
       "command": "secpol.msc",
       "availability": {
@@ -214,7 +214,7 @@
       }
     },
     {
-      "id": "cleanmgr",
+      "id": "Cleanmgr",
       "display_name": "Lemezkarbantarto",
       "command": "cleanmgr",
       "availability": {
@@ -227,7 +227,7 @@
       }
     },
     {
-      "id": "optionalfeatures",
+      "id": "Optionalfeatures",
       "display_name": "Windows szolgaltatasok",
       "command": "optionalfeatures",
       "availability": {
@@ -240,7 +240,7 @@
       }
     },
     {
-      "id": "resmon",
+      "id": "Resmon",
       "display_name": "Eroforrás-figyelo",
       "command": "resmon",
       "availability": {
@@ -253,7 +253,7 @@
       }
     },
     {
-      "id": "perfmon_msc",
+      "id": "PerfmonMSC",
       "display_name": "Teljesitmenyfigyelo",
       "command": "perfmon.msc",
       "availability": {
@@ -266,7 +266,7 @@
       }
     },
     {
-      "id": "msinfo32",
+      "id": "Msinfo32",
       "display_name": "Rendszerinformacio",
       "command": "msinfo32",
       "availability": {
@@ -277,7 +277,7 @@
       }
     },
     {
-      "id": "dxdiag",
+      "id": "Dxdiag",
       "display_name": "DirectX Diagnosztika",
       "command": "dxdiag",
       "availability": {
@@ -288,7 +288,7 @@
       }
     },
     {
-      "id": "compmgmt_msc",
+      "id": "CompmgmtMSC",
       "display_name": "Szamitogep-kezeles",
       "command": "compmgmt.msc",
       "availability": {
@@ -299,7 +299,7 @@
       }
     },
     {
-      "id": "fsmgmt_msc",
+      "id": "FsmgmtMSC",
       "display_name": "Megosztott mappak",
       "command": "fsmgmt.msc",
       "availability": {
@@ -310,7 +310,7 @@
       }
     },
     {
-      "id": "devmgmt_msc",
+      "id": "DevmgmtMSC",
       "display_name": "Eszkozkezelo",
       "command": "devmgmt.msc",
       "availability": {
@@ -321,7 +321,7 @@
       }
     },
     {
-      "id": "certmgr_msc",
+      "id": "CertmgrMSC",
       "display_name": "Tanusitvanykezelo",
       "command": "certmgr.msc",
       "availability": {
@@ -332,7 +332,7 @@
       }
     },
     {
-      "id": "eventvwr_msc",
+      "id": "EventvwrMSC",
       "display_name": "Esemenynaplo",
       "command": "eventvwr.msc",
       "availability": {
@@ -343,7 +343,7 @@
       }
     },
     {
-      "id": "colorcpl",
+      "id": "Colorcpl",
       "display_name": "Szinkezeles",
       "command": "colorcpl",
       "availability": {
@@ -354,7 +354,7 @@
       }
     },
     {
-      "id": "powercfg_cpl",
+      "id": "PowercfgCPL",
       "display_name": "Energiagazdalkodas",
       "command": "powercfg.cpl",
       "availability": {
@@ -365,7 +365,7 @@
       }
     },
     {
-      "id": "desk_cpl",
+      "id": "DeskCPL",
       "display_name": "Kijelzo beallitasok",
       "command": "desk.cpl",
       "availability": {
@@ -376,7 +376,7 @@
       }
     },
     {
-      "id": "main_cpl",
+      "id": "MainCPL",
       "display_name": "Eger beallitasok",
       "command": "main.cpl",
       "availability": {
@@ -387,7 +387,7 @@
       }
     },
     {
-      "id": "timedate_cpl",
+      "id": "TimedateCPL",
       "display_name": "Ido es datum",
       "command": "timedate.cpl",
       "availability": {
@@ -398,7 +398,7 @@
       }
     },
     {
-      "id": "joy_cpl",
+      "id": "JoyCPL",
       "display_name": "Jatekvezerlok",
       "command": "joy.cpl",
       "availability": {
@@ -409,7 +409,7 @@
       }
     },
     {
-      "id": "intl_cpl",
+      "id": "IntlCPL",
       "display_name": "Regio es nyelv",
       "command": "intl.cpl",
       "availability": {
@@ -420,7 +420,7 @@
       }
     },
     {
-      "id": "firewall_cpl",
+      "id": "FirewallCPL",
       "display_name": "Windows Firewall",
       "command": "firewall.cpl",
       "availability": {
@@ -431,7 +431,7 @@
       }
     },
     {
-      "id": "write_exe",
+      "id": "WriteEXE",
       "display_name": "WordPad",
       "command": "write.exe",
       "availability": {
@@ -441,7 +441,7 @@
       }
     },
     {
-      "id": "calc",
+      "id": "Calc",
       "display_name": "Szamologep",
       "command": "calc",
       "availability": {
@@ -452,7 +452,7 @@
       }
     },
     {
-      "id": "legacy_calculator",
+      "id": "LegacyCalculator",
       "name": "Klasszikus Szamologep",
       "command": "calc.exe",
       "status": {
@@ -461,7 +461,7 @@
       }
     },
     {
-      "id": "snippingtool",
+      "id": "Snippingtool",
       "display_name": "Kepmetszo (Legacy)",
       "command": "snippingtool",
       "availability": {
@@ -472,7 +472,7 @@
       }
     },
     {
-      "id": "dialer",
+      "id": "Dialer",
       "display_name": "Telefontarcsazo",
       "command": "dialer",
       "availability": {
@@ -483,7 +483,7 @@
       }
     },
     {
-      "id": "osk",
+      "id": "Osk",
       "display_name": "Kepernyo-billentyuzet",
       "command": "osk",
       "availability": {
@@ -493,7 +493,7 @@
       }
     },
     {
-      "id": "psr",
+      "id": "Psr",
       "display_name": "Lepesrogzito",
       "command": "psr",
       "availability": {
@@ -504,7 +504,7 @@
       }
     },
     {
-      "id": "winver",
+      "id": "Winver",
       "display_name": "Windows verzio",
       "command": "winver",
       "availability": {
@@ -513,7 +513,7 @@
       }
     },
     {
-      "id": "cliconfg",
+      "id": "Cliconfg",
       "display_name": "SQL Client Config",
       "command": "cliconfg",
       "availability": {
@@ -522,7 +522,7 @@
       }
     },
     {
-      "id": "odbcad32",
+      "id": "Odbcad32",
       "display_name": "ODBC adatforrasok",
       "command": "odbcad32",
       "availability": {
@@ -531,7 +531,7 @@
       }
     },
     {
-      "id": "sigverif",
+      "id": "Sigverif",
       "display_name": "Fajlalairas ellenorzes",
       "command": "sigverif",
       "availability": {
@@ -540,7 +540,7 @@
       }
     },
     {
-      "id": "verifier",
+      "id": "Verifier",
       "display_name": "Driver Verifier",
       "command": "verifier",
       "availability": {
@@ -549,7 +549,7 @@
       }
     },
     {
-      "id": "mrt",
+      "id": "Mrt",
       "display_name": "Kartevo-eltavolito",
       "command": "mrt",
       "availability": {
@@ -558,7 +558,7 @@
       }
     },
     {
-      "id": "stikynot",
+      "id": "Stikynot",
       "display_name": "Sticky Notes (Regi)",
       "command": "stikynot",
       "availability": {
@@ -568,7 +568,7 @@
       }
     },
     {
-      "id": "shell_appsfolder",
+      "id": "ShellAppsfolder",
       "display_name": "Osszes Alkalmazas Mappa",
       "command": "shell:AppsFolder",
       "availability": {
@@ -578,7 +578,7 @@
       }
     },
     {
-      "id": "shell_startup",
+      "id": "ShellStartup",
       "display_name": "Inditopult Mappa",
       "command": "shell:Startup",
       "availability": {
@@ -588,7 +588,7 @@
       }
     },
     {
-      "id": "fsquirt",
+      "id": "Fsquirt",
       "display_name": "Bluetooth fajlatvitel",
       "command": "fsquirt",
       "availability": {
@@ -597,7 +597,7 @@
       }
     },
     {
-      "id": "iscsicpl",
+      "id": "Iscsicpl",
       "display_name": "iSCSI kezdemenyezo",
       "command": "iscsicpl",
       "availability": {
@@ -606,7 +606,7 @@
       }
     },
     {
-      "id": "rekeywiz",
+      "id": "Rekeywiz",
       "display_name": "EFS tanusitvanykezelo",
       "command": "rekeywiz",
       "availability": {
@@ -616,7 +616,7 @@
     }
         },
     {
-      "id": "windows_update_classic",
+      "id": "WindowsUpdateClassic",
       "name": "Windows Update (Klasszikus eleres)",
       "command": "control /name Microsoft.WindowsUpdate",
       "status": {
