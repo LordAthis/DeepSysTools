@@ -1,5 +1,6 @@
 # DeepSysTools
 **Eldugott és törölt Windows rendszereszközök és beállítások könnyen elérhetővé tétele.**
+**Verzió:** 1.x
 
 Make hidden and deleted system tools and settings available - Eldugott és törölt Rendszereszközök és beállítások elérhetővé tétele.
 
@@ -31,3 +32,51 @@ A DeepSysTools egy **PowerShell alapú launcher**, amely visszahozza azokat a kl
 ---
 
 ## Mappa struktúra
+DeepSysTools/
+├── Launcher.ps1              ← Fő indító
+├── SysList.json              ← Eszköz adatbázis
+├── Scripts/
+│   ├── GpeditMSC/
+│   ├── LusrmgrMSC/
+│   ├── WordPad/
+│   └── .../
+├── Sys/                      ← (rendszerfájlok, ha szükséges)
+└── LOG/                      ← Futási naplók
+
+
+
+---
+
+## Támogatott eszközök (példák)
+
+- **Klasszikus Vezérlőpult**
+- **God Mode**
+- **Csoportházirend (gpedit.msc)** – Home-on is
+- **Helyi felhasználók kezelése (lusrmgr.msc)**
+- **Hálózati kapcsolatok (ncpa.cpl)**
+- **Lemezkarbantartó**, **Teljesítményfigyelő**, **Esemény-napló**, stb.
+- És még sok más...
+
+---
+
+## Fejlesztés / Bővítés
+
+Új eszköz hozzáadása:
+1. Szerkeszd a `SysList.json` fájlt
+2. Szükség esetén hozz létre mappát a `Scripts\<ID>\` alatt
+3. Tedd bele a `Default.ps1` és/vagy `W11.ps1` szkripteket
+
+---
+
+## Licenc
+
+MIT License – lásd a [LICENSE](LICENSE) fájlt.
+
+---
+
+## Kapcsolódó projekt
+
+- **[WinRegTools](https://github.com/LordAthis/WinRegTools)** – Rendszeroptimalizálás, takarítás, telemetria-letiltás stb.
+
+---
+
