@@ -64,9 +64,3 @@ A DeepSysTools egy **PowerShell alapú launcher**, amely visszahozza azokat a kl
 
 ---
 
-## Kapcsolódó projekt
-
-- **[WinRegTools](https://github.com/LordAthis/WinRegTools)** – Rendszeroptimalizálás, takarítás, telemetria-letiltás stb.
-
----
-
