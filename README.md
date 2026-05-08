@@ -29,9 +29,9 @@ A DeepSysTools egy **PowerShell alapú launcher**, amely visszahozza azokat a kl
 
 > **Megjegyzés:** Az első indításkor adminisztrátori jogokat kér a launcher.
 
----
-
 ## Mappa struktúra
+
+
 DeepSysTools/
 ├── Launcher.ps1              ← Fő indító
 ├── SysList.json              ← Eszköz adatbázis
@@ -42,7 +42,6 @@ DeepSysTools/
 │   └── .../
 ├── Sys/                      ← (rendszerfájlok, ha szükséges)
 └── LOG/                      ← Futási naplók
-
 
 
 ---
@@ -65,12 +64,6 @@ DeepSysTools/
 1. Szerkeszd a `SysList.json` fájlt
 2. Szükség esetén hozz létre mappát a `Scripts\<ID>\` alatt
 3. Tedd bele a `Default.ps1` és/vagy `W11.ps1` szkripteket
-
----
-
-## Licenc
-
-MIT License – lásd a [LICENSE](LICENSE) fájlt.
 
 ---
 
