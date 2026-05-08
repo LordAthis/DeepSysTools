@@ -31,20 +31,17 @@ A DeepSysTools egy **PowerShell alapú launcher**, amely visszahozza azokat a kl
 
 ## Mappa struktúra
 
+- **DeepSysTools/**
+  - **Launcher.ps1** ← Fő indító
+  - **SysList.json** ← Eszköz adatbázis
+  - **Scripts/**
+    - GpeditMSC/
+    - LusrmgrMSC/
+    - WordPad/
+    - .../
+  - **Sys/** ← (rendszerfájlok, ha szükséges)
+  - **LOG/** ← Futási naplók
 
-DeepSysTools/
-├── Launcher.ps1              ← Fő indító
-├── SysList.json              ← Eszköz adatbázis
-├── Scripts/
-│   ├── GpeditMSC/
-│   ├── LusrmgrMSC/
-│   ├── WordPad/
-│   └── .../
-├── Sys/                      ← (rendszerfájlok, ha szükséges)
-└── LOG/                      ← Futási naplók
-
-
----
 
 ## Támogatott eszközök (példák)
 
