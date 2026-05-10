@@ -61,6 +61,7 @@ while ($true) {
         Write-Host ("[{0,2}] {1}" -f ($i+1), $Categories[$i])
     }
     Write-Host "--------------------"
+    Write-Host "[B] Vissza a kategoriakhoz"
     Write-Host "[Q] Kilepes"
 
     $CatInput = Read-Host "Valassz kategoriat"
