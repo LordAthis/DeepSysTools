@@ -49,6 +49,9 @@ Write-DeepLog "Searching.ps1 elinditva a hatterben (.NET Runspace)"
 $Data = Get-Content $JsonPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $Categories = $Data.tools.category | Select-Object -Unique | Where-Object { $_ -ne $null }
 
+# A változó értékének inicializálása
+$GlobalQuit = $false
+
 while ($true) {
     Clear-Host
     Write-Host "--- DeepSysTools - Kategoriak ---" -ForegroundColor Yellow
