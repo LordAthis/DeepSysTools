@@ -841,6 +841,16 @@
 		"XP": {"status": "native"},
 		"W11": {"status": "native"}
 		}
+	},
+
+	{ "id": "FlushDNS",
+	"display_name": "DNS gyorsitotar uritese",
+	"category": "Karbantartas",
+	"command": "ipconfig /flushdns",
+	"availability": {
+		"W10": {"status": "native"},
+		"W11": {"status": "native"}
+		}
 	}
 	
   ]
