@@ -845,7 +845,7 @@
 
 	{ "id": "FlushDNS",
 	"display_name": "DNS gyorsitotar uritese",
-	"category": "Karbantartas",
+	"category": "Javitasok",
 	"command": "ipconfig /flushdns",
 	"availability": {
 		"W10": {"status": "native"},
