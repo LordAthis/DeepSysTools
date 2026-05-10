@@ -791,7 +791,57 @@
         "W10": {"status": "removed", "fix": "Win7 Games for Win10/11 telepito szukseges."},
         "W11": {"status": "removed", "fix": "Win7 Games for Win10/11 telepito szukseges."}
         }
-    }
+    },
+
+	{ "id": "RestartExplorer",
+	"display_name": "Explorer (Intezo) ujrainditasa",
+	"category": "Javitasok",
+	"command": "taskkill /f /im explorer.exe & start explorer.exe",
+	"availability": {
+		"XP": {"status": "native"},
+		"W11": {"status": "native"}
+		}
+	},
+	  
+    { "id": "RefreshPolicy",
+	"display_name": "Hazirendek frissitese (GPUpdate)",
+	"category": "Javitasok",
+	"command": "gpupdate /force",
+	"availability": {
+		"XP": {"status": "native"},
+		"W11": {"status": "native"}
+		}
+	},
+	  
+    { "id": "RestartSpooler",
+	"display_name": "Nyomtatasi sorolo ujrainditasa",
+	"category": "Javitasok",
+	"command": "net stop spooler & net start spooler",
+	"availability": {
+		"XP": {"status": "native"},
+		"W11": {"status": "native"}
+		}
+	},
+	  
+    { "id": "ClearIconCache",
+	"display_name": "Ikon gyorsitotar uritese",
+	"category": "Javitasok",
+	"command": "ie4uinit.exe -show",
+	"availability": {
+		"W7": {"status": "native"},
+		"W11": {"status": "native"}
+		}
+	},
+	  
+    { "id": "RepairWMI",
+	"display_name": "WMI tarhaz javítása (Kritikus)",
+	"category": "Javitasok",
+	"command": "winmgmt /salvagerepository",
+	"availability": {
+		"XP": {"status": "native"},
+		"W11": {"status": "native"}
+		}
+	}
 	
   ]
 }
