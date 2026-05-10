@@ -1,4 +1,4 @@
-# DeepSysTools Launcher - Kategoria alapú
+# DeepSysTools Launcher
 $ErrorActionPreference = "Stop"
 
 # Jogosultság emelése
@@ -7,6 +7,7 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     exit
 }
 
+# Utvonalak beallitasa
 $RootDir = $PSScriptRoot
 $LogDir  = Join-Path $RootDir "LOG"
 $ScriptDir = Join-Path $RootDir "Scripts"
@@ -20,38 +21,36 @@ function Write-DeepLog($Msg) {
     "[$Stamp] $Msg" | Out-File -FilePath $LogFile -Append -Encoding UTF8
 }
 
-# Rendszer info
+# Rendszer adatok lekérése
 $OSCaption = (Get-WmiObject Win32_OperatingSystem).Caption
 $Arch = if ([Environment]::Is64BitOperatingSystem) { "x64" } else { "x86" }
 $OSID = if ($OSCaption -like "*Windows 11*") { "W11" } elseif ($OSCaption -like "*10*") { "W10" } else { "Legacy" }
 
 Write-DeepLog "Inditas: $OSCaption ($OSID)"
 
-# .NET alapú háttérfolyamat (Runspace) létrehozása
-$Runspace = [runspacefactory]::CreateRunspace()
-$Runspace.Open()
+# Hatterfolyamat inditasa (.NET Runspace)
+try {
+    $Runspace = [runspacefactory]::CreateRunspace()
+    $Runspace.Open()
+    $PowerShell = [powershell]::Create()
+    $PowerShell.Runspace = $Runspace
+    $PowerShell.AddScript({
+        param($SPath, $RDir)
+        & $SPath -RootDir $RDir
+    }).AddParameter("SPath", (Join-Path $ScriptDir "Searching.ps1")).AddParameter("RDir", $RootDir) | Out-Null
+    $AsyncResult = $PowerShell.BeginInvoke()
+    Write-DeepLog "Searching.ps1 elinditva a hatterben."
+} catch { Write-DeepLog "Hatterfolyamat hiba: $_" }
 
-$PowerShell = [powershell]::Create()
-$PowerShell.Runspace = $Runspace
-
-# Átadjuk a szükséges útvonalakat a háttérszálnak
-$PowerShell.AddScript({
-    param($SPath, $RDir)
-    & $SPath -RootDir $RDir
-}).AddParameter("SPath", (Join-Path $ScriptDir "Searching.ps1")).AddParameter("RDir", $RootDir) | Out-Null
-
-# Indítás aszinkron módon
-$AsyncResult = $PowerShell.BeginInvoke()
-Write-DeepLog "Searching.ps1 elinditva a hatterben (.NET Runspace)"
-
-
-# JSON betöltés
+# JSON betöltése
+if (-not (Test-Path $JsonPath)) { Write-Host "Hianyzik a SysList.json!" -ForegroundColor Red; exit }
 $Data = Get-Content $JsonPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $Categories = $Data.tools.category | Select-Object -Unique | Where-Object { $_ -ne $null }
 
-# A változó értékének inicializálása
+# Globalis valtozok inicializalasa
 $GlobalQuit = $false
 
+# FO CIKLUS (Kategoriak)
 while ($true) {
     Clear-Host
     Write-Host "--- DeepSysTools - Kategoriak ---" -ForegroundColor Yellow
@@ -70,6 +69,7 @@ while ($true) {
     if ([int]::TryParse($CatInput, [ref]$cIdx) -and $cIdx -gt 0 -and $cIdx -le $Categories.Count) {
         $SelCat = $Categories[$cIdx-1]
         
+        # ALMENÜ CIKLUS (Eszközök)
         while ($true) {    
             Clear-Host
             Write-Host "--- Kategoria: $SelCat ---" -ForegroundColor Cyan
@@ -78,7 +78,6 @@ while ($true) {
             
             $count = 1
             foreach ($T in $Filtered) {
-                # Csak azokat mutatjuk, amiknek van neve
                 if (-not $T.display_name) { continue }
                 Write-Host ("[{0,2}] {1}" -f $count, $T.display_name)
                 $List.Add($T)
@@ -90,86 +89,32 @@ while ($true) {
 
             $ToolInput = Read-Host "Valassz"
 
-            # Kilepes kezelese
-            if ($ToolInput -eq "q") { 
-                Write-DeepLog "Globalis kilepes az almenubol."
-                $GlobalQuit = $true 
-                break 
-            }
+            if ($ToolInput -eq "q") { $GlobalQuit = $true; break }
             if ($ToolInput -eq "b") { break }
 
             $tIdx = 0
             if ([int]::TryParse($ToolInput, [ref]$tIdx) -and $tIdx -gt 0 -and $tIdx -le $List.Count) {
                 $Tool = $List[$tIdx-1]
                 $TID = $Tool.id 
-                
                 Write-DeepLog "Inditas: $TID"
 
-                # Script utvonalak ellenorzese
                 $Spec = Join-Path $ScriptDir "$TID\$OSID.ps1"
                 $Def = Join-Path $ScriptDir "$TID\Default.ps1"
 
-                if (Test-Path $Spec) { 
-                    & $Spec 
-                }
-                elseif (Test-Path $Def) { 
-                    & $Def 
-                }
+                if (Test-Path $Spec) { & $Spec }
+                elseif (Test-Path $Def) { & $Def }
                 else {
-                    # Direkt parancs inditasa CMD bypass-al
+                    # CMD Bypass inditas (Barmit megnyit, ami parancssorbol megy)
                     $CmdArgs = "/c start `"`" `"$($Tool.command)`""
                     try {
                         Start-Process cmd.exe -ArgumentList $CmdArgs -WindowStyle Hidden
-                    } catch {
-                        Write-DeepLog "HIBA: $($Tool.command) nem indithato."
-                    }
+                    } catch { Write-DeepLog "HIBA: $($Tool.command) nem indithato." }
                 }
-                
                 Write-Host "`nNyomj Entert a folytatashoz..."
                 $null = Read-Host
             }
         }
-        # Kilepes a fociklusbol is, ha Q-t nyomtak
         if ($GlobalQuit) { break }
     }
-
-            $tIdx = 0
-                        if ([int]::TryParse($ToolInput, [ref]$tIdx) -and $tIdx -gt 0 -and $tIdx -le $List.Count) {
-                $Tool = $List[$tIdx-1]
-                $TID = $Tool.id
-                Write-DeepLog "Futtatas: $TID"
-
-                # Útvonalak keresése a JSON ID-ja alapján
-                $Spec = Join-Path $ScriptDir "$TID\$OSID.ps1"
-                $Def = Join-Path $ScriptDir "$TID\Default.ps1"
-
-                if (Test-Path $Spec) { 
-                    & $Spec 
-                }
-                elseif (Test-Path $Def) { 
-                    & $Def 
-                }
-                else {
-                    # Ha nincs külön script, direkt parancs inditása
-                    Write-DeepLog "Direkt parancs inditasa: $($Tool.command)"
-                    
-                    # Speciális shell hivatkozások kezelése explorerrel
-                    if ($Tool.command -like "shell:*" -or $Tool.command -like "*:::{*") {
-                        Start-Process explorer.exe -ArgumentList $Tool.command
-                    }
-                    else {
-                        # Normal inditás, hiba esetén (SID/Process hiba) fallback az Explorerre
-                        try {
-                            Start-Process $Tool.command -ErrorAction Stop
-                        } catch {
-                            Write-DeepLog "SID/Process hiba, ujraprobalas Explorerrel..."
-                            Start-Process explorer.exe -ArgumentList $Tool.command
-                        }
-                    }
-                }
-                Write-Host "`nNyomj Entert a folytatashoz..."
-                $null = Read-Host
-            }
-        }
-    }
 }
+Write-DeepLog "Program leallitava."
