@@ -70,7 +70,7 @@ while ($true) {
     if ([int]::TryParse($CatInput, [ref]$cIdx) -and $cIdx -gt 0 -and $cIdx -le $Categories.Count) {
         $SelCat = $Categories[$cIdx-1]
         
-        while ($true) {
+        while ($true) {    
             Clear-Host
             Write-Host "--- Kategoria: $SelCat ---" -ForegroundColor Cyan
             $Filtered = $Data.tools | Where-Object { $_.category -eq $SelCat }
@@ -78,16 +78,60 @@ while ($true) {
             
             $count = 1
             foreach ($T in $Filtered) {
+                # Csak azokat mutatjuk, amiknek van neve
+                if (-not $T.display_name) { continue }
                 Write-Host ("[{0,2}] {1}" -f $count, $T.display_name)
                 $List.Add($T)
                 $count++
             }
             Write-Host "--------------------"
-            Write-Host "[B] Vissza"
-            Write-Host "[Q] Kilepes"
+            Write-Host "[B] Vissza a kategoriakhoz"
+            Write-Host "[Q] Kilepes a programbol"
 
-            $ToolInput = Read-Host "Valassz eszkozt"
+            $ToolInput = Read-Host "Valassz"
+
+            # Kilepes kezelese
+            if ($ToolInput -eq "q") { 
+                Write-DeepLog "Globalis kilepes az almenubol."
+                $GlobalQuit = $true 
+                break 
+            }
             if ($ToolInput -eq "b") { break }
+
+            $tIdx = 0
+            if ([int]::TryParse($ToolInput, [ref]$tIdx) -and $tIdx -gt 0 -and $tIdx -le $List.Count) {
+                $Tool = $List[$tIdx-1]
+                $TID = $Tool.id 
+                
+                Write-DeepLog "Inditas: $TID"
+
+                # Script utvonalak ellenorzese
+                $Spec = Join-Path $ScriptDir "$TID\$OSID.ps1"
+                $Def = Join-Path $ScriptDir "$TID\Default.ps1"
+
+                if (Test-Path $Spec) { 
+                    & $Spec 
+                }
+                elseif (Test-Path $Def) { 
+                    & $Def 
+                }
+                else {
+                    # Direkt parancs inditasa CMD bypass-al
+                    $CmdArgs = "/c start `"`" `"$($Tool.command)`""
+                    try {
+                        Start-Process cmd.exe -ArgumentList $CmdArgs -WindowStyle Hidden
+                    } catch {
+                        Write-DeepLog "HIBA: $($Tool.command) nem indithato."
+                    }
+                }
+                
+                Write-Host "`nNyomj Entert a folytatashoz..."
+                $null = Read-Host
+            }
+        }
+        # Kilepes a fociklusbol is, ha Q-t nyomtak
+        if ($GlobalQuit) { break }
+    }
 
             $tIdx = 0
                         if ([int]::TryParse($ToolInput, [ref]$tIdx) -and $tIdx -gt 0 -and $tIdx -le $List.Count) {
